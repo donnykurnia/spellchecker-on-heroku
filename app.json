@@ -1,0 +1,5 @@
+{
+  "name": "PHP Spellchecker engine in heroku",
+  "description": "Running PHP spellchecker webservice for jquery-spellchecker with PSpell driver",
+  "image": "heroku/php"
+}
