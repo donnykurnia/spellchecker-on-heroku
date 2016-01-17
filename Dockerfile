@@ -2,27 +2,30 @@ FROM heroku/php
 MAINTAINER Donny Kurnia <donnykurnia@gmail.com>
 
 #install pspell
-RUN mkdir -p /app/.heroku/root && \
+RUN mkdir -p /app/.heroku/aspell && \
 
-    apt-get update && \
-    apt-get install -y aspell-en aspell-da libpspell-dev && \
+    cd /app/user/src && \
+    tar zxf aspell-0.60.6.1.tar.gz && \
+    cd aspell-0.60.6.1 && \
+    ./configure --prefix=/app/.heroku/aspell && \
+    make install && \
 
-    for f in `dpkg -L libpspell-dev       | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
-    for f in `dpkg -L aspell              | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
-    for f in `dpkg -L aspell-en           | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
-    for f in `dpkg -L aspell-da           | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
-    for f in `dpkg -L dictionaries-common | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
-    for f in `dpkg -L libaspell-dev       | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
-    for f in `dpkg -L libaspell15         | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
-    for f in `dpkg -L libtext-iconv-perl  | grep -v '\/\.'`; do if [ -f $f ]; then cp --parents $f /app/.heroku/root; fi done && \
+    cd /app/user/src && \
+    tar jxf aspell6-en-2015.04.24-0.tar.bz2 && \
+    cd aspell6-en-2015.04.24-0 && \
+    PATH=/app/.heroku/aspell/bin:$PATH ./configure && \
+    make install && \
 
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get clean && \
+    cd /app/user/src && \
+    tar jxf aspell5-da-1.4.42-1.tar.bz2 && \
+    cd aspell5-da-1.4.42-1 && \
+    PATH=/app/.heroku/aspell/bin:$PATH ./configure && \
+    make install && \
 
     cd /app/user/src && \
     cd pspell && \
     phpize && \
-    ./configure --with-pspell=/app/.heroku/root/usr && \
+    ./configure --with-pspell=/app/.heroku/aspell && \
     make && \
     make install && \
     make clean && \
