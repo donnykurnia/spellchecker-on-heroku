@@ -1,6 +1,8 @@
 FROM heroku/php
 MAINTAINER Donny Kurnia <donnykurnia@gmail.com>
 
+ENV PATH $PATH:/app/.heroku/aspell/bin
+
 #install pspell
 RUN mkdir -p /app/.heroku/aspell && \
 
@@ -13,13 +15,13 @@ RUN mkdir -p /app/.heroku/aspell && \
     cd /app/user/src && \
     tar jxf aspell6-en-2015.04.24-0.tar.bz2 && \
     cd aspell6-en-2015.04.24-0 && \
-    PATH=/app/.heroku/aspell/bin:$PATH ./configure && \
+    ./configure && \
     make install && \
 
     cd /app/user/src && \
     tar jxf aspell5-da-1.4.42-1.tar.bz2 && \
     cd aspell5-da-1.4.42-1 && \
-    PATH=/app/.heroku/aspell/bin:$PATH ./configure && \
+    ./configure && \
     make install && \
 
     cd /app/user/src && \
