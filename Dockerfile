@@ -1,7 +1,7 @@
 FROM heroku/php
 MAINTAINER Donny Kurnia <donnykurnia@gmail.com>
 
-ENV PATH $PATH:/app/.heroku/aspell/bin
+ENV PATH /app/.heroku/php/bin:/app/.heroku/php/sbin:/app/.heroku/aspell/bin:$PATH
 
 #install pspell
 RUN mkdir -p /app/.heroku/aspell && \
