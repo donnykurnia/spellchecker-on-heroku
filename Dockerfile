@@ -32,3 +32,11 @@ RUN mkdir -p /app/.heroku/aspell && \
     make install && \
     make clean && \
     echo "extension=pspell.so" >> /app/.heroku/php/etc/php/conf.d/pspell.ini
+
+RUN useradd -m php && \
+    find /app/.heroku/php -type d -exec chmod o+rx {} \; && \
+    chown php vendor/heroku/heroku-buildpack-php/conf/nginx/* && \
+    chmod o+rx /app/.heroku/php/sbin/nginx && \
+    chmod o+r /app/.heroku/php/etc/nginx/* && \
+    chmod o+w /app/.heroku/php/var/log/nginx /app/.heroku/php/var/run/nginx /app/.heroku/php/var/run
+USER php
