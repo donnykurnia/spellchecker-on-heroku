@@ -1,6 +1,7 @@
 {
   "require": {
-    "php": "^7.1.33"
+    "php": "^7.1.33",
+    "ext-pspell": "*"
   },
   "require-dev": {
     "heroku/heroku-buildpack-php": "*"
