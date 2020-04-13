@@ -1,42 +1,25 @@
-FROM heroku/php
-MAINTAINER Donny Kurnia <donnykurnia@gmail.com>
+FROM php:7.4.4-apache as php-build
 
-ENV PATH /app/.heroku/php/bin:/app/.heroku/php/sbin:/app/.heroku/aspell/bin:$PATH
+ENV PORT 3000
 
 #install pspell
-RUN mkdir -p /app/.heroku/aspell && \
+RUN apt-get update && \
+    apt-get install -y libpspell-dev && \
+    docker-php-ext-configure pspell && \
+    docker-php-ext-install -j$(nproc) pspell && \
+    docker-php-ext-enable pspell
 
-    cd /app/user/src && \
-    tar zxf aspell-0.60.6.1.tar.gz && \
-    cd aspell-0.60.6.1 && \
-    ./configure --prefix=/app/.heroku/aspell && \
-    make install && \
+CMD sed -i "s/80/$PORT/g" /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf && \
+    docker-php-entrypoint apache2-foreground
 
-    cd /app/user/src && \
-    tar jxf aspell6-en-2015.04.24-0.tar.bz2 && \
-    cd aspell6-en-2015.04.24-0 && \
-    ./configure && \
-    make install && \
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY . /var/www/html
 
-    cd /app/user/src && \
-    tar jxf aspell5-da-1.4.42-1.tar.bz2 && \
-    cd aspell5-da-1.4.42-1 && \
-    ./configure && \
-    make install && \
-
-    cd /app/user/src && \
-    cd pspell && \
-    phpize && \
-    ./configure --with-pspell=/app/.heroku/aspell && \
-    make && \
-    make install && \
-    make clean && \
-    echo "extension=pspell.so" >> /app/.heroku/php/etc/php/conf.d/pspell.ini
+FROM php-build
+MAINTAINER Donny Kurnia <donnykurnia@gmail.com>
 
 RUN useradd -m php && \
-    find /app/.heroku/php -type d -exec chmod o+rx {} \; && \
-    chown php vendor/heroku/heroku-buildpack-php/conf/nginx/* && \
-    chmod o+rx /app/.heroku/php/sbin/nginx && \
-    chmod o+r /app/.heroku/php/etc/nginx/* && \
-    chmod o+w /app/.heroku/php/var/log/nginx /app/.heroku/php/var/run/nginx /app/.heroku/php/var/run
+    chown -R php /var/www/html /etc/apache2/
+WORKDIR  /var/www/html
 USER php
+RUN composer install
