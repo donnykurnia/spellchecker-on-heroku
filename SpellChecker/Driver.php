@@ -34,6 +34,7 @@ abstract class Driver {
 
 		header('Content-type: application/json');
 		header('Access-Control-Allow-Origin: *');
+		header('Access-Control-Expose-Headers: connection,date,server,x-powered-by,vary,content-encoding,content-length,content-type,via,x-final-url,access-control-allow-origin');
 
 		echo json_encode($response);
 	}
