@@ -18,6 +18,8 @@ COPY . /var/www/html
 FROM php-build
 MAINTAINER Donny Kurnia <donnykurnia@gmail.com>
 
+ENV PATH /usr/local/sbin:/usr/sbin:/sbin:$PATH
+
 RUN useradd -m php && \
     chown -R php /var/www/html /etc/apache2/
 WORKDIR  /var/www/html
