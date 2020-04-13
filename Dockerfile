@@ -4,7 +4,7 @@ ENV PORT 3000
 
 #install pspell
 RUN apt-get update && \
-    apt-get install -y libpspell-dev && \
+    apt-get install -y libpspell-dev aspell-da && \
     docker-php-ext-configure pspell && \
     docker-php-ext-install -j$(nproc) pspell && \
     docker-php-ext-enable pspell
